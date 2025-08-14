@@ -32,13 +32,14 @@
 }
 
 .city {
-    padding-top: 9px;
+    padding-top: 0.5rem;
     font-size: 1.5rem;
     color: black;
 }
 
 .city-line{
-    font-size: 2.5rem;
+    margin-top: -10px;
+    font-size: 40px;
     font-weight: 600;
     color: #B86802;
 }
@@ -56,7 +57,7 @@
 }
 
 .temp {
-    font-weight:1000;
+    font-weight:850;
 }
 
 .icon-desc {

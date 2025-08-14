@@ -4,7 +4,6 @@ import './WeatherDate.css';
 //문제점
 //아이콘을 api가 제공해주는 것으로 사용할 것이냐?
 //백엔드에서 정보를 받아야 보안상 안전한데 어떻게 할 것인가?
-//일단 아직 로딩이 안됨;
 
 export default function WeatherDate() {
     const [weather, setWeather] = useState(null);
