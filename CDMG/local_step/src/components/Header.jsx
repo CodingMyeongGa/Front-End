@@ -1,12 +1,8 @@
 import './Header.css';
 
-const Header = () => {
-
-  return (
-    <div id="header">
-      <p id='header_txt'>홈</p>
-    </div>
-  )
-};
-
+const Header = ({ title }) => (
+  <div id="header">
+    <p id='header_txt'>{title}</p>
+  </div>
+);
 export default Header;
