@@ -1,0 +1,75 @@
+.weatherdate {
+    margin-top: 20%;
+    display: grid;
+    grid-template-rows: auto auto; /* 위: 날짜 / 아래: 날씨 */
+    gap: 5px;
+    /* background: #c5a8a8ff; */
+}
+
+.date-box {
+    text-align: left;
+}
+
+.date-text {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+
+
+/* 날씨 박스 */
+.weather-box {
+    padding: 0px;
+    text-align: left;
+}
+
+.weather-content {
+    display: flex;
+    flex-direction: row;       /* 바깥은 가로 배치 */
+    align-items: flex-start;
+    gap: 8px;                  /* | 와 옆 묶음 간격 */
+    font-size: 0.8rem;
+}
+
+.city {
+    padding-top: 9px;
+    font-size: 1.5rem;
+    color: black;
+}
+
+.city-line{
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #B86802;
+}
+
+.weather-info {
+    padding-top: 0.1rem;
+    display: flex;
+    flex-direction: column;    /* 기온과 날씨 세로 배치 */
+}
+
+.temp-desc {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.temp {
+    font-weight:1000;
+}
+
+.icon-desc {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+}
+
+.desc{
+    font-weight:600;
+}
