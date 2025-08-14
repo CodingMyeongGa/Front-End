@@ -1,19 +1,12 @@
 import './Footer.css';
+import Button from './Foot_Button';
 
-import home from '../assets/Footer_btn/Home_btn_clicked.png'
-import setRoute from '../assets/Footer_btn/SetRoute_btn_default.png'
-import mypage from '../assets/Footer_btn/Mypage_btn_default.png'
-
-
-const Footer = () => {
-
-  return (
-    <div id="footer">
-      <img src={home} alt="home" />
-      <img src={setRoute} alt="set route" />
-      <img src={mypage} alt="mypage" />
-    </div>
-  )
-};
+const Footer = ({ active, setActive }) => (
+  <div id="footer">
+    <Button name="home" isActive={active === 'home'} onClick={() => setActive('home')} />
+    <Button name="setRoute" isActive={active === 'setRoute'} onClick={() => setActive('setRoute')} />
+    <Button name="mypage" isActive={active === 'mypage'} onClick={() => setActive('mypage')} />
+  </div>
+);
 
 export default Footer;
