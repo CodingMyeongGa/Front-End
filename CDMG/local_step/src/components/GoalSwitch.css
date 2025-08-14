@@ -1,0 +1,88 @@
+/* 화면 한가운데 배치용 컨테이너 */
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;        /* 가로 중앙 */
+  justify-content: center;    /* 세로 중앙 */
+  gap: 16px;
+  min-height: 100vh;          /* 화면 높이 기준 */
+  padding: 24px 16px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+}
+
+/* 스위치 */
+.goal-switch {
+  position: relative;
+  display: flex;              /* inline-flex → flex */
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  width: fit-content;         /* 내용만큼 */
+  margin: 0 auto;             /* 혹시 모를 중앙 보정 */
+  padding: 14px 18px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  background: #8DBE74;        /* ON 배경 */
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.goal-switch.off { background: #d7d7d7; }
+
+.goal-switch:focus-visible {
+  outline: 3px solid #4c8bf5;
+  outline-offset: 2px;
+}
+
+.switch-label {
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #1a1a1a;
+}
+
+/* 오른쪽 동그란 노브(안에 숫자 표시) */
+.switch-knob {
+  margin-left: auto;          /* 라벨-노브 양 끝 배치 */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e6df54;
+  display: grid;
+  place-items: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+  overflow: hidden;
+}
+
+.goal-switch.off .switch-knob {
+  background: #f0f0a8;
+  transform: translateX(-2px);
+}
+
+.knob-text {
+  font-size: 10px;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+  text-align: center;
+  transform: translateY(1px);
+}
+
+/* 버튼 줄(증감 컨트롤)도 중앙 */
+.controls {
+  display: flex;
+  justify-content: center;    /* 가로 중앙 */
+  gap: 10px;
+  width: 100%;                /* 중앙 정렬 유지 */
+  flex-wrap: wrap;            /* 줄바꿈 시에도 중앙 유지 */
+}
+
+.round {
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: none;
+  background: #cfcfcf;
+  cursor: pointer;
+  font-weight: 700;
+}
+.round:hover { filter: brightness(0.95); }

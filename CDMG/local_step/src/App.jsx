@@ -4,6 +4,13 @@ import Footer from './components/Footer';
 import WeatherDate from './components/WeatherDate';
 import './App.css';
 
+import { Routes, Route, Navigate } from "react-router-dom";
+import RootLayout from "./layouts/RootLayout.jsx";
+import Home from "./pages/Home.jsx";
+import Mypage from "./pages/Mypage.jsx";
+import Edit from "./pages/Edit.jsx";
+import SetRoute from "./pages/SetRoute.jsx";
+
 function App() {
   const [active, setActive] = useState('home');
   const headerTitles = {
@@ -13,16 +20,24 @@ function App() {
   };
 
   return (
-    <div id="mobile-wrapper">
-      <Header title={headerTitles[active]} />
+    // <div id="mobile-wrapper">
+    //   <Header title={headerTitles[active]} />
 
-      <main id="content">
-        <WeatherDate />
-      </main>
+    //   <main id="content">
+    //     <WeatherDate />
+    //   </main>
 
-      <Footer active={active} setActive={setActive} />
+    //   <Footer active={active} setActive={setActive} />
 
-    </div>
+    // </div>
+    <Routes>
+      <Route element={<RootLayout />}>
+        <Route index element={<Home />} />
+        <Route path="mypage" element={<Mypage />} />
+        <Route path="edit" element={<Edit />} />
+        <Route path="set-route" element={<SetRoute />} />
+      </Route>
+    </Routes>
   );
 }
 
