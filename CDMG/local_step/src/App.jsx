@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import WeatherDate from './components/WeatherDate';
 import './App.css';
 
 function App() {
@@ -16,9 +17,9 @@ function App() {
       <Header title={headerTitles[active]} />
 
       <main id="content">
-
+        <WeatherDate />
       </main>
-      
+
       <Footer active={active} setActive={setActive} />
 
     </div>
