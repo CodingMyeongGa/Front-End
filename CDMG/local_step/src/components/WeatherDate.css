@@ -1,5 +1,5 @@
 .weatherdate {
-    margin-top: 20%;
+    margin-top: 0;
     display: grid;
     grid-template-rows: auto auto; /* 위: 날짜 / 아래: 날씨 */
     gap: 5px;

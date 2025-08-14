@@ -72,6 +72,7 @@ export default function WeatherDate() {
             let description = data?.weather?.[0]?.description || '';
             const descMap = {
             '온흐림': '흐림',
+            '튼구름': '구름'
             // '온비': '비',  // 필요하면 추가
             };
             if (descMap[description]) {
@@ -122,12 +123,11 @@ export default function WeatherDate() {
 
   return (
     <div className="weatherdate">
-      {/* ⬇️ 날짜: 항상 표시 */}
       <section className="date-box" aria-label="오늘 날짜">
         <div className="date-text">{getFormattedDate()}</div>
       </section>
 
-      {/* ⬇️ 날씨: 상태에 따라 분기 */}
+
       <section className="weather-box" aria-label="현재 날씨">
         {loading && <div className="loading">날씨 불러오는 중…</div>}
 
@@ -148,32 +148,9 @@ export default function WeatherDate() {
         )}
 
         {!loading && weather && (
-          // <div className="weather-content">
-          //       {weather.city && <div className="city">{weather.city}</div>}
-          //       <span> | </span>
-          //       <div className="weather-info">
-          //           <div className="temp-desc">
-          //               <span>기온: </span>
-          //               <div className="temp">{weather.temp?.toFixed?.(1)}°C</div>
-          //           </div>
-                    
-
-          //           <div className="icon-desc">
-          //               <span>날씨: </span>
-          //               {weather.icon && (
-          //                   <img
-          //                   className="icon"
-          //                   alt="weather icon"
-          //                   src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-          //                   />
-          //               )}
-          //               <div className="desc">{weather.description}</div>
-          //           </div>
-          //       </div>
-          // </div>
           <div className="weather-content">
           {weather.city && <div className="city">{weather.city}</div>}
-          <span class="city-line">|</span>
+          <span className="city-line">|</span>
           <div className="weather-info">
               <div className="temp-desc">
                   <span>기온: </span>
