@@ -1,4 +1,4 @@
-import React from 'react'; // ⬅️ React.StrictMode 사용하려면 꼭 필요
+import React from 'react';
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'

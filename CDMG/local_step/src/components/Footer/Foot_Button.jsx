@@ -1,6 +1,6 @@
 import './Foot_Button.css';
 
-const files = import.meta.glob('../assets/Footer_btn/*.png', { eager: true });
+const files = import.meta.glob('../../assets/Footer_btn/*.png', { eager: true });
 const byName = Object.fromEntries(
   Object.entries(files).map(([k, v]) => [k.split('/').pop(), v.default])
 );

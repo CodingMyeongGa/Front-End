@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import WeatherDate from './components/WeatherDate';
+import Header from './components/Header/Header.jsx';
+import Footer from './components/Footer/Footer';
+import WeatherDate from './components/Home/WeatherDate.jsx';
 import './App.css';
 
 import { Routes, Route, Navigate } from "react-router-dom";
