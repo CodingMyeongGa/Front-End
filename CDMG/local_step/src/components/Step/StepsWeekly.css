@@ -1,0 +1,8 @@
+.StepsWeekly.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+.steps_header { display: grid; gap: 8px; }
+.steps_header .actions { display: flex; gap: 8px; align-items: center; }

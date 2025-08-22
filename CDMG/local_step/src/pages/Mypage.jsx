@@ -1,10 +1,12 @@
-const Mypage = () => {
+import AccumulatedBlock from "../components/Mypage/AccumulatedBlock";
+import Profile from "../components/Mypage/Profile";
 
+
+export default function Mypage() {
   return (
-    <div>
-
+    <div style={{ padding: 16 }}>
+      <Profile />
+      <AccumulatedBlock/>
     </div>
-  )
-};
-
-export default Mypage;
+  );
+}

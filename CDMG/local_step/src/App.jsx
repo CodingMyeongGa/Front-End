@@ -10,6 +10,11 @@ import Home from "./pages/Home.jsx";
 import Mypage from "./pages/Mypage.jsx";
 import Edit from "./pages/Edit.jsx";
 import SetRoute from "./pages/SetRoute.jsx";
+import Login from "./pages/Login.jsx";
+import Setting from "./pages/Setting.jsx";
+import StepsWeekly from './pages/StepsWeekly.jsx';
+
+
 
 function App() {
   const [active, setActive] = useState('home');
@@ -36,6 +41,9 @@ function App() {
         <Route path="mypage" element={<Mypage />} />
         <Route path="edit" element={<Edit />} />
         <Route path="set-route" element={<SetRoute />} />
+        <Route path="login" element={<Login/>} />
+        <Route path="setting" element={<Setting/>} />
+        <Route path="stepsweekly" element={<StepsWeekly/>} />
       </Route>
     </Routes>
   );
