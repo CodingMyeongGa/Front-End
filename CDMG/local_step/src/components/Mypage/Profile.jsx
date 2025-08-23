@@ -30,15 +30,6 @@ import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 
 function Profile() {
-
-  const REST_API_KEY = '42751a9b7d932eac24627939d11d3120';
-  const REDIRECT_URI = 'http://43.201.15.212/api/auth/kakao';
-  const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-
-  const loginHandler = () => {
-    window.location.href = link;
-  };
-
   const navigate = useNavigate();
 
   const goLogin = () => navigate("/login");
@@ -56,12 +47,12 @@ function Profile() {
       <div className="avatar" aria-hidden="true" />
 
       {/* 이름 + 이메일 인증 버튼 */}
-      <div className="info">
+      {/* <div className="info">
         <h2 className="name">김김김</h2>
-        <button className="verify-btn" onClick={loginHandler}>
+        <button className="verify-btn" onClick={goLogin}>
           카카오로 로그인
         </button>
-      </div>
+      </div> */}
 
       {/* 포인트 */}
       <div className="points">
