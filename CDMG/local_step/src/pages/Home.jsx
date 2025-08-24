@@ -4,13 +4,17 @@ import WeekStep from "../components/Home/WeekStep";
 import Map from "../components/Home/Map";
 import TodayStep from "../components/Home/TodayStep";
 import HomeAfterSetRoute from "./HomeAfterSetRoute";
-import { readGoal } from "../hooks/useAutoGoalSession";
+// import { readGoal } from "../hooks/useAutoGoalSession";
+import useAutoGoalSession from "../hooks/useAutoGoalSession";
+
 
 
 const Home = ({ week_step_total }) => {
   const [weekStatuses, setWeekStatuses] = useState(null);
   const [todayIdx, setTodayIdx] = useState(null);
-  const [goal, setGoal] = useState(readGoal());
+  // const [goal, setGoal] = useState(readGoal());
+
+  const { goal } = useAutoGoalSession(); // ⬅️ 목표 변경에 반응
 
   const handleWeekMeta = useCallback(({ todayIdx, statuses }) => {
     setTodayIdx(prev => (prev === todayIdx ? prev : todayIdx));

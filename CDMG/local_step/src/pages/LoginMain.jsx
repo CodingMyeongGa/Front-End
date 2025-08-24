@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../components/Login/LoginMain.css";
+import "../components/Login/loginMain.css"; // 파일명 대소문자 일치
 
 export default function LoginMain() {
   const [email, setEmail] = useState("");
