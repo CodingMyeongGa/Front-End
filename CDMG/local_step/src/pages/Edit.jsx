@@ -1,4 +1,4 @@
-import GoalSwitch from "../components/GoalSwitch";
+import GoalSwitch from "../components/GoalSwitch/GoalSwitch";
 
 const Edit = () => {
 

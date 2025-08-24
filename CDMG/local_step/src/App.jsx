@@ -25,20 +25,13 @@ function App() {
     mypage: '마이 페이지'
   };
 
+  const totalSteps = 49000;
+
   return (
-    // <div id="mobile-wrapper">
-    //   <Header title={headerTitles[active]} />
-
-    //   <main id="content">
-    //     <WeatherDate />
-    //   </main>
-
-    //   <Footer active={active} setActive={setActive} />
-
-    // </div>
     <Routes>
       <Route element={<RootLayout />}>
-        <Route index element={<Home />} />
+        <Route index element={<Home 
+          week_step_total={totalSteps} />} />
         <Route path="mypage" element={<Mypage />} />
         <Route path="edit" element={<Edit />} />
         <Route path="set-route" element={<SetRoute />} />
