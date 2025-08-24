@@ -51,6 +51,7 @@ function App() {
           <Route path="setting" element={<Setting/>} />
           <Route path="stepsweekly" element={<StepsWeekly/>} />
           <Route path="signup" element={<Signup/>} />
+          <Route path="login-main" element={<LoginMain/>} />
         </Route>
     </Routes>
   );
