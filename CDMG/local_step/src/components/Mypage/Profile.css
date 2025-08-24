@@ -1,0 +1,113 @@
+/* ===== Profile Card (2nd image) ===== */
+.profile-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  position: relative;
+
+  display: grid;
+  grid-template-areas:
+    "avatar name setting"
+    "avatar points value";
+  grid-template-columns: 72px 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 10px 16px;
+
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #e9eaee;           /* 카드 연한 회색 */
+  /* 필요하면 살짝 그림자도 */
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+/* 왼쪽 동그라미 아바타 */
+.profile-card .avatar {
+  grid-area: avatar;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #cfd1d4;           /* 플레이스홀더 회색 */
+  object-fit: cover;              /* 실제 이미지 들어가면 유지 */
+}
+
+/* 우상단 톱니(아이콘 버튼/이미지 공용) */
+.profile-card .settings-btn {
+  grid-area: setting;
+  justify-self: end;
+  align-self: start;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* 이름 + 인증 뱃지 */
+.profile-card .name {
+  grid-area: name;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;                       /* 이름과 뱃지 간격 */
+  min-width: 0;
+}
+.profile-card .name b,
+.profile-card .name .nickname {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2740;                 /* 짙은 네이비 */
+  line-height: 1.1;
+}
+.profile-card .verify-badge {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  line-height: 1;
+  color: #1f2740;
+  background: #cfd1d4;            /* 뱃지 배경 */
+  white-space: nowrap;
+}
+
+/* 하단 좌: 포인트 라벨(아이콘 포함 가능) */
+.profile-card .points {
+  grid-area: points;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1f2740;
+  font-size: 14px;
+}
+.profile-card .points .icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;   /* 필요시 배경이미지 set */
+}
+
+/* 하단 우: 포인트 값 */
+.profile-card .points-value {
+  grid-area: value;
+  justify-self: end;
+  align-self: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: #1f2740;
+}
+
+/* 작은 화면 튜닝 */
+@media (max-width: 360px) {
+  .profile-card {
+    grid-template-columns: 56px 1fr auto;
+    padding: 16px;
+  }
+  .profile-card .avatar { width: 56px; height: 56px; }
+  .profile-card .name b,
+  .profile-card .name .nickname,
+  .profile-card .points-value { font-size: 16px; }
+  .profile-card .verify-badge { font-size: 11px; padding: 5px 10px; }
+}

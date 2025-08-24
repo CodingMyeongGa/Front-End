@@ -1,0 +1,61 @@
+.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: none;
+  border-radius: 10px;
+  padding: 0 14px;
+
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+
+  transition: transform .04s ease, box-shadow .2s ease, background .2s ease, opacity .2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  background: #f3f4f6;
+  color: #111827;
+}
+
+/* sizes */
+.Button--sm { height: 32px; font-size: 13px; padding: 0 12px; }
+.Button--md { height: 38px; font-size: 14px; }
+.Button--lg { height: 44px; font-size: 15px; padding: 0 16px; }
+
+/* variants */
+.Button--default {
+  background: #f3f4f6;
+  color: #111827;
+}
+.Button--default:hover { background: #e5e7eb; }
+.Button--default:active { transform: translateY(1px); }
+
+.Button--positive {
+  background: #8DBE74; /* 네가 쓰던 톤 */
+  color: white;
+}
+.Button--positive:hover { background: #7fb264; }
+.Button--positive:active { transform: translateY(1px); }
+
+.Button--negative {
+  background: #ef4444;
+  color: white;
+}
+.Button--negative:hover { background: #dc2626; }
+.Button--negative:active { transform: translateY(1px); }
+
+/* states */
+.Button:focus-visible {
+  outline: 3px solid rgba(76, 139, 245, 0.6);
+  outline-offset: 2px;
+}
+
+.Button.is-disabled,
+.Button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}

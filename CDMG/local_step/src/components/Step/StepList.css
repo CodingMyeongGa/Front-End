@@ -1,0 +1,6 @@
+.StepsList .menu_bar {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 12px;
+}
+.StepsList .date_filter { padding: 8px; border-radius: 8px; border: 1px solid #ddd; }
+.StepsList .list_wrapper { display: grid; gap: 10px; }
+.StepsList .empty { padding: 24px; text-align: center; color: #777; }
