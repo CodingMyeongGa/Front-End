@@ -5,12 +5,12 @@
   align-items: center;        /* 가로 중앙 */
   justify-content: center;    /* 세로 중앙 */
   gap: 16px;
-  min-height: 100vh;          /* 화면 높이 기준 */
+  max-height: 100vh;          /* 화면 높이 기준 */
   padding: 24px 16px;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  padding-top: 18rem;
 }
-
 /* 스위치 */
 .goal-switch {
   position: relative;

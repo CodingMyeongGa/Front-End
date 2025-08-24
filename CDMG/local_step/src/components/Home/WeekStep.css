@@ -1,0 +1,69 @@
+#txt-gj{
+    font-size: 1rem;
+    font-weight: 500;
+}
+#week_steps_total{
+    margin-left: 0.5rem;
+    margin-right: 0.2rem;
+    font-size: 1.5rem;
+    font-weight: 650;
+    /* color: #FF6B00; */
+    color: #E75D2F;
+}
+#txt-g{
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+
+
+#week_step_checklist {
+    display: flex;
+    flex-direction: column;   /* 가로(row) → 세로(column) */
+    justify-content: center;  /* column일 땐 세로축 정렬 */
+    align-items: center;      /* 가로축 가운데 정렬 */
+    margin-top: 0.5rem;
+}
+
+#day {
+    display: flex;
+    justify-content: space-between;
+    width: 98%;
+}
+#day span {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #333;
+}
+
+#checklist{
+    display: flex;
+    justify-content: space-between;
+    width: 98%;
+}
+
+#checklist .check-item {
+    position: relative;      
+    width: 1.2rem;   /* 기본 아이콘 크기 고정 */
+    height: 1.2rem;
+    display: block;
+}
+
+#checklist .check-item .base-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#checklist .check-item .today-mark {
+    position: absolute;
+    left: 50%;           /* 가로 기준 가운데 */
+    bottom: -5px;        /* 아이콘 하단보다 5px 아래 */
+    transform: translateX(-50%); /* 가운데 정렬 보정 */
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.8; /* 투명도 조정 */
+
+    width: 1.7rem;    /* 원하는 크기 */
+    height: auto;   /* 비율 유지 */
+}
