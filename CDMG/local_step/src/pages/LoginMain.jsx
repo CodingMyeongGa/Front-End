@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
+import { login, isAuthed } from "../utils/auth";   
+import { useNavigate, Link } from "react-router-dom";  
+import { setSessionLoggedIn } from "../routes/AuthGate";
 import "../components/Login/loginMain.css"; // 파일명 대소문자 일치
 
 export default function LoginMain() {
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => { if (isAuthed()) navigate("/", { replace:true }) }, [navigate])
 
   // 🔑 카카오 로그인 설정
   const REST_API_KEY = "42751a9b7d932eac24627939d11d3120";
@@ -26,7 +32,9 @@ export default function LoginMain() {
 
     setError(null);
     // TODO: 실제 로그인 API 연동
-    alert("로그인 성공! 🎉");
+    setSessionLoggedIn(true);
+    navigate("/", { replace:true });
+    // alert("로그인 성공! 🎉");
   };
 
   const kakaoLoginHandler = () => {
@@ -68,7 +76,7 @@ export default function LoginMain() {
         </button>
 
         <p className="signup-text">
-          아직 계정이 없으신가요? <a href="/signup">회원가입</a>
+          아직 계정이 없으신가요? <Link to="/signup">회원가입</Link>
         </p>
       </form>
     </div>
