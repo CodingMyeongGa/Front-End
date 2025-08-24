@@ -47,12 +47,12 @@ function Profile() {
       <div className="avatar" aria-hidden="true" />
 
       {/* 이름 + 이메일 인증 버튼 */}
-      {/* <div className="info">
+      <div className="info">
         <h2 className="name">김김김</h2>
-        <button className="verify-btn" onClick={goLogin}>
+        {/* <button className="verify-btn" onClick={goLogin}>
           카카오로 로그인
-        </button>
-      </div> */}
+        </button> */}
+      </div> 
 
       {/* 포인트 */}
       <div className="points">

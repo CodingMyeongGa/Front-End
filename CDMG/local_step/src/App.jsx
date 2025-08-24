@@ -11,7 +11,6 @@ import Home from "./pages/Home.jsx";
 import Mypage from "./pages/Mypage.jsx";
 import Edit from "./pages/Edit.jsx";
 import SetRoute from "./pages/SetRoute.jsx";
-// import Login from "./pages/Login.jsx";
 import Setting from "./pages/Setting.jsx";
 import StepsWeekly from './pages/StepsWeekly.jsx';
 import LoginMain from './pages/LoginMain.jsx';
@@ -43,19 +42,16 @@ function App() {
 
   return (
     <Routes>
-      <Route element={<RootLayout />}>
-        <Route path="login-main" element={<LoginMain/>} />
-        <Route path="signup" element={<Signup/>} />
         {/* ▼ 로그인 필요 영역 */}
-        <Route element={<AuthGate />}>
+        <Route element={<RootLayout />}>
           <Route index element={<Home week_step_total={totalSteps} />} />
           <Route path="mypage" element={<Mypage />} />
           <Route path="edit" element={<Edit />} />
           <Route path="set-route" element={<SetRoute />} />
           <Route path="setting" element={<Setting/>} />
           <Route path="stepsweekly" element={<StepsWeekly/>} />
+          <Route path="signup" element={<Signup/>} />
         </Route>
-      </Route>
     </Routes>
   );
 }
