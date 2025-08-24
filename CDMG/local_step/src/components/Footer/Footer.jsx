@@ -5,6 +5,7 @@ import { readGoal } from '../../hooks/useAutoGoalSession'
 
 export default function Footer() {
   const { pathname } = useLocation()
+
   const navigate = useNavigate()
   const active =
     pathname === '/' ? 'home' :
