@@ -1,4 +1,4 @@
-#footer {
+/* #footer {
     position: absolute;
     bottom:0;left:0; right:0;
     width: 100%;
@@ -14,6 +14,14 @@
     
 
     border-top: 1.5px solid #ccc;
+} */
+
+#footer {
+  background-color: #D9D9D9; /* 레이아웃/사이즈는 App.css가 담당 */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1.5px solid #ccc;
 }
 
 #footer img {
