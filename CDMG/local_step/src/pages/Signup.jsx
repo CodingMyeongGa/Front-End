@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../components/Login/LoginMain.css";
+import "../components/Login/loginMain.css";
 import { useNavigate } from "react-router-dom";
 import "../components/Login/Signup.css";
 
@@ -21,7 +21,7 @@ export default function Signup() {
 
   const onEmailChange = (v) => {
     setEmail(v);
-    setEmailConfirmed(false); // 수정 시 확인 초기화
+    setEmailConfirmed(false);
     if (validateEmailFormat(v)) {
       setEmailValid(true);
       setEmailCheckMsg("이메일 형식이 유효합니다.");
@@ -52,8 +52,7 @@ export default function Signup() {
     }
   };
 
-
- const onSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setErr("");
 
@@ -83,22 +82,19 @@ export default function Signup() {
       const data = await res.json();
       if (!res.ok || !data?.success) throw new Error(data.message || "회원가입 실패");
 
-      // login("localdev"); // ⬅️ 제거: 자동 로그인 금지
-      sessionStorage.removeItem("authToken"); // ⬅️ 안전 차단
+      sessionStorage.removeItem("authToken");
       sessionStorage.removeItem("isLoggedIn");
 
-      nav("/login-main", { replace: true }); // ⬅️ 회원가입 후 로그인 화면으로 이동
+      nav("/login-main", { replace: true });
     } catch (err) {
       setErr(err.message || "문제가 발생했습니다.");
     }
   };
 
-
   return (
     <div className="signup-container">
       <form className="signup-box" onSubmit={onSubmit}>
         <h2 className="signup-title">회원가입</h2>
-
         <label>닉네임</label>
         <input
           type="text"
@@ -106,7 +102,6 @@ export default function Signup() {
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
         />
-
         <label>이메일</label>
         <div className="row-email">
           <input
@@ -133,7 +128,6 @@ export default function Signup() {
             {emailCheckMsg}
           </div>
         )}
-
         <label>비밀번호</label>
         <input
           type="password"
@@ -141,7 +135,6 @@ export default function Signup() {
           value={pw}
           onChange={(e) => setPw(e.target.value)}
         />
-
         <label>비밀번호 다시 입력</label>
         <input
           type="password"
@@ -149,9 +142,7 @@ export default function Signup() {
           value={pw2}
           onChange={(e) => setPw2(e.target.value)}
         />
-
         {err && <div className="error">{err}</div>}
-
         <div className="signup-actions">
           <button
             type="button"

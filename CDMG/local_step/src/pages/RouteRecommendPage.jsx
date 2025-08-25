@@ -1,28 +1,8 @@
 import "../components/RouteRecommend/RouteRecommendPage.css"
 import useAutoGoalSession from "../hooks/useAutoGoalSession"
 import { useEffect, useMemo, useRef, useState } from "react";
+import useNaverScript from "../hooks/useNaverScript";
 
-
-const clientID = "http://localhost:5173/";
-/** 네이버 지도 스크립트 로더 */
-function useNaverScript(clientId) {
-  const [ready, setReady] = useState(!!window.naver?.maps)
-  useEffect(() => {
-    if (ready) return
-    const ex = document.getElementById("naver-map-script")
-    if (ex) { ex.addEventListener("load", () => setReady(true), { once: true }); return }
-    const el = document.createElement("script")
-    el.id = "naver-map-script"
-    el.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${encodeURIComponent(clientId)}`
-    el.async = true
-    el.onload = () => setReady(true)
-    el.onerror = () => console.error("[NAVER] script load failed:", el.src)
-    document.body.appendChild(el)
-  }, [clientId, ready])
-  return ready
-}
-
-/** 반원형 게이지 (배경 + 진행) */
 function SemiCircleGauge({ value, target }) {
   const clamped = Math.max(0, Math.min(value / (target || 1), 1))
   const r = 120
@@ -40,23 +20,20 @@ function SemiCircleGauge({ value, target }) {
   )
 }
 
-/** 메인 페이지 */
 export default function RouteRecommendPage({
   clientId = import.meta.env.VITE_NAVERMAP_CLIENT_ID,
   routeId = "sample-1",
 }) {
-  const scriptReady = useNaverScript(clientId)
+  const scriptReady = useNaverScript({ clientId })
   const mapRef = useRef(null)
   const mapObj = useRef(null)
   const polylineRef = useRef(null)
 
-  // 현재 걸음 수/목표(홈과 동일 훅)
   const { total: steps, goal } = useAutoGoalSession()
   const target = goal || 0
 
-  // 파생 지표(간단 가정치)
-  const cadence = 100  // steps/min
-  const stepLen = 0.8  // m/step
+  const cadence = 100
+  const stepLen = 0.8
   const minutes = Math.round((steps || 0) / cadence)
   const km = ((steps || 0) * stepLen / 1000).toFixed(2)
   const kcal = Math.round((steps || 0) * 0.04)
@@ -69,9 +46,7 @@ export default function RouteRecommendPage({
     [37.58402, 126.92646],
   ])
 
-  useEffect(() => {
-    // (실사용) fetch(`/api/routes/${routeId}`).then(...setRouteCoords)
-  }, [routeId])
+  useEffect(() => {}, [routeId])
 
   useEffect(() => {
     if (!scriptReady || !mapRef.current) return
@@ -125,12 +100,9 @@ export default function RouteRecommendPage({
 
   return (
     <div className="route-page">
-      {/* 지도 */}
       <div className="map-wrap">
         <div ref={mapRef} className="naver-map" aria-label="추천 경로 지도" />
       </div>
-
-      {/* 게이지 섹션 */}
       <section className="gauge-wrap">
         <button className="chip chip-left" onClick={() => alert("경로 설명")}>
           <span className="chip-ico" aria-hidden>🗺️</span>
@@ -140,9 +112,7 @@ export default function RouteRecommendPage({
           <span className="chip-ico" aria-hidden>📋</span>
           매장 보기
         </button>
-
         <SemiCircleGauge value={steps || 0} target={target || 1} />
-
         <div className="gauge-center">
           <div className="steps">
             <strong>{(steps || 0).toLocaleString()}보</strong>
