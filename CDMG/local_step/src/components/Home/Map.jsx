@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import './Map.css'
 
 const CLIENT_ID = import.meta.env.VITE_NAVERMAP_CLIENT_ID
-const MAP_SRC = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${CLIENT_ID}&submodules=geocoder`
+const MAP_SRC = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${encodeURIComponent(CLIENT_ID)}&submodules=geocoder`
 
 export default function Map(){
   const { coords } = useLocationCtx()

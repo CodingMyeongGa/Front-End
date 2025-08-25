@@ -1,93 +1,98 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import usePedometer from './usePedometer'
 
-const LS_GOAL = 'step_goal'
-const LS_SESSION = 'step_session' // {date, startedAt, base, total, running, done}
-
+// per-user keys
 const todayKey = () => {
   const d = new Date()
   const mm = String(d.getMonth()+1).padStart(2,'0')
   const dd = String(d.getDate()).padStart(2,'0')
   return `${d.getFullYear()}-${mm}-${dd}`
 }
+const getUID = () => {
+  const raw = sessionStorage.getItem('userId')
+  return raw != null ? (Number(raw) || raw) : 'anon'
+}
+const goalKey = (uid=getUID()) => `step_goal:${uid}`
+const sessionKey = (uid=getUID()) => `step_session:${uid}`
 
-export function readGoal(){
+export function readGoal(uid=getUID()){
   try{
-    const raw = localStorage.getItem(LS_GOAL)
+    const raw = localStorage.getItem(goalKey(uid))
     if (!raw) return 0
     const obj = JSON.parse(raw)
     if (!obj?.value || obj?.date !== todayKey()){
-      localStorage.removeItem(LS_GOAL)
+      localStorage.removeItem(goalKey(uid))
       return 0
     }
     return Number(obj.value) > 0 ? Number(obj.value) : 0
   }catch{
-    localStorage.removeItem(LS_GOAL); return 0
+    localStorage.removeItem(goalKey(uid)); return 0
   }
 }
 
-export function setGoalForToday(value){
-  if (Number(value) > 0){
-    localStorage.setItem(LS_GOAL, JSON.stringify({ value: Number(value), date: todayKey() }))
-    window.dispatchEvent(new StorageEvent('storage', { key: LS_GOAL }))
+export function setGoalForToday(value, uid=getUID()){
+  const v = Number(value) || 0
+  if (v > 0){
+    localStorage.setItem(goalKey(uid), JSON.stringify({ value: v, date: todayKey() }))
   }else{
-    localStorage.removeItem(LS_GOAL)
-    window.dispatchEvent(new StorageEvent('storage', { key: LS_GOAL }))
+    localStorage.removeItem(goalKey(uid))
   }
+  window.dispatchEvent(new Event('local-step:goal-change'))
+  window.dispatchEvent(new StorageEvent('storage', { key: goalKey(uid) }))
 }
 
-/* 테스트용 초기화(원하면 그대로 유지) */
-export function clearGoalAndSession(){
-  localStorage.removeItem(LS_GOAL)
-  localStorage.removeItem(LS_SESSION)
-  window.dispatchEvent(new StorageEvent('storage', { key: LS_GOAL }))
-  window.dispatchEvent(new StorageEvent('storage', { key: LS_SESSION }))
+export function clearGoalAndSession(uid=getUID()){
+  localStorage.removeItem(goalKey(uid))
+  localStorage.removeItem(sessionKey(uid))
+  window.dispatchEvent(new Event('local-step:goal-change'))
   window.dispatchEvent(new Event('local-step:refresh'))
+  window.dispatchEvent(new StorageEvent('storage', { key: goalKey(uid) }))
+  window.dispatchEvent(new StorageEvent('storage', { key: sessionKey(uid) }))
 }
 
 export default function useAutoGoalSession(){
+  const uid = getUID()
   const { steps } = usePedometer({ useGenericSensor: true })
-  const [goal, setGoal] = useState(readGoal())
+  const [goal, setGoal] = useState(readGoal(uid))
   const [session, setSession] = useState(() => {
-    try{ const s = JSON.parse(localStorage.getItem(LS_SESSION)||'null'); return s || null }catch{ return null }
+    try{ const s = JSON.parse(localStorage.getItem(sessionKey(uid))||'null'); return s || null }catch{ return null }
   })
   const baseSet = useRef(false)
 
-  // storage & refresh 이벤트 수신
   useEffect(() => {
     const onStorage = (e) => {
-      if (!e || e.key === LS_GOAL) setGoal(readGoal())
-      if (!e || e.key === LS_SESSION){
+      if (!e || e.key === goalKey(uid)) setGoal(readGoal(uid))
+      if (!e || e.key === sessionKey(uid)){
         try{
-          const s = JSON.parse(localStorage.getItem(LS_SESSION)||'null')
+          const s = JSON.parse(localStorage.getItem(sessionKey(uid))||'null')
           setSession(s || null); baseSet.current = !!(s && s.base)
         }catch{ setSession(null); baseSet.current = false }
       }
     }
-    const onRefresh = () => { setGoal(readGoal()); setSession(null); baseSet.current = false }
+    const onGoalChange = () => setGoal(readGoal(uid))
+    const onRefresh = () => { setGoal(readGoal(uid)); setSession(null); baseSet.current = false }
     window.addEventListener('storage', onStorage)
+    window.addEventListener('local-step:goal-change', onGoalChange)
     window.addEventListener('local-step:refresh', onRefresh)
     return () => {
       window.removeEventListener('storage', onStorage)
+      window.removeEventListener('local-step:goal-change', onGoalChange)
       window.removeEventListener('local-step:refresh', onRefresh)
     }
-  }, [])
+  }, [uid])
 
-  // ⬇️ 자동 시작 제거: 목표가 있어도 세션은 시작하지 않음. 시작 버튼에서 start() 호출 필요
-  // 날짜 넘어가면 세션/목표 동기화
   useEffect(() => {
     const id = setInterval(() => {
       const today = todayKey()
       if (session && session.date !== today){
-        setSession(null); localStorage.removeItem(LS_SESSION); baseSet.current = false
+        setSession(null); localStorage.removeItem(sessionKey(uid)); baseSet.current = false
       }
-      const g = readGoal()
+      const g = readGoal(uid)
       if (g !== goal) setGoal(g)
     }, 60*1000)
     return () => clearInterval(id)
-  }, [session, goal])
+  }, [session, goal, uid])
 
-  // 진행 중일 때에만 실시간 합산
   const liveTotal = useMemo(() => {
     if (!session?.running || !baseSet.current) return session?.total || 0
     return Math.max(0, steps - session.base)
@@ -99,37 +104,27 @@ export default function useAutoGoalSession(){
     if (!Number.isFinite(t)) return
     if (goal > 0 && t >= goal){
       const done = { ...session, total: goal, running:false, done:true, endedAt: Date.now() }
-      setSession(done); localStorage.setItem(LS_SESSION, JSON.stringify(done))
+      setSession(done); localStorage.setItem(sessionKey(uid), JSON.stringify(done))
     }else{
       const live = { ...session, total: t, done:false }
-      setSession(live); localStorage.setItem(LS_SESSION, JSON.stringify(live))
+      setSession(live); localStorage.setItem(sessionKey(uid), JSON.stringify(live))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liveTotal, goal])
+  }, [liveTotal, goal, session, uid])
 
-  // ⬇️ 컨트롤러: 시작/중단
   const start = () => {
     if (goal <= 0) return
     const key = todayKey()
     const s = { date:key, startedAt: Date.now(), base: steps, total: 0, running:true, done:false }
     baseSet.current = true
-    setSession(s); localStorage.setItem(LS_SESSION, JSON.stringify(s))
-    window.dispatchEvent(new StorageEvent('storage', { key: LS_SESSION }))
+    setSession(s); localStorage.setItem(sessionKey(uid), JSON.stringify(s))
+    window.dispatchEvent(new StorageEvent('storage', { key: sessionKey(uid) }))
   }
   const stop = () => {
     if (!session) return
     const s = { ...session, running:false }
-    setSession(s); localStorage.setItem(LS_SESSION, JSON.stringify(s))
-    window.dispatchEvent(new StorageEvent('storage', { key: LS_SESSION }))
+    setSession(s); localStorage.setItem(sessionKey(uid), JSON.stringify(s))
+    window.dispatchEvent(new StorageEvent('storage', { key: sessionKey(uid) }))
   }
 
-  return { 
-    goal, 
-    session, 
-    total: session?.total || 0, 
-    running: !!session?.running, 
-    done: !!session?.done,
-    start, 
-    stop 
-  }
+  return { goal, session, total: session?.total || 0, running: !!session?.running, done: !!session?.done, start, stop }
 }

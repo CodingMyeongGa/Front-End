@@ -4,6 +4,11 @@ const API_BASE = "http://43.201.15.212:8080";
 // 실제 전환 시: USE_MOCK = false 로 바꾸고, 아래 fetchWeeklyStepsReal 구현만 채워주면 됨.
 const USE_MOCK = false;
 
+const todayISO = (d=new Date()) => {
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0')
+  return `${y}-${m}-${dd}`
+}
+
 /**
  * 모킹: from~to에 해당하는 일주일 더미 데이터 생성 후 600ms 지연 반환
  * @param {string} from YYYY-MM-DD
@@ -49,7 +54,6 @@ async function fetchWeeklyStepsReal(from, to) {
     steps: Number(current_steps) || 0,
   }));
 }
-
 
 export async function fetchWeeklySteps(from, to) {
   return USE_MOCK ? fetchWeeklyStepsMock(from, to) : fetchWeeklyStepsReal(from, to);
@@ -102,4 +106,59 @@ export async function fetchUserGoal(userId) {
   });
   if (!res.ok) throw new Error("GET_GOAL_FAILED");
   return res.json();
+}
+
+
+export async function fetchWeekTotalExclToday() {
+  const ymd = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+  const startOfWeek = (date) => {
+    const d = new Date(date);
+    const day = d.getDay(); // 0: Sun
+    const diff = (day === 0 ? -6 : 1) - day; // Monday
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const today = new Date();
+  const start = startOfWeek(today);
+  const end = new Date(today);
+  end.setDate(today.getDate() - 1);
+  end.setHours(23, 59, 59, 999);
+
+  if (end < start) return 0; // 월요일이면 0
+
+  const rows = await fetchWeeklySteps(ymd(start), ymd(end));
+  return (rows || []).reduce((sum, r) => sum + (Number(r.steps) || 0), 0);
+}
+
+export async function resetUserGoal(userId){
+  const token = getToken()
+  const id = Number(userId) || userId
+  if (!id) throw new Error("NO_USER_ID")
+
+  // 1) 서버가 DELETE 지원 시 시도
+  try{
+    const del = await fetch(`${API_BASE}/api/steps/goal/${id}`, {
+      method: "DELETE",
+      headers: { ...(token ? { Authorization:`Bearer ${token}` } : {}) },
+    })
+    if (del.ok) return del.json().catch(()=> ({}))
+    // 405/404일 경우만 계속 진행
+    if (![404,405].includes(del.status)) throw new Error(`DELETE_${del.status}`)
+  }catch{ /* fallthrough */ }
+
+  // 2) 미지원이면 goal_steps=0으로 재설정(POST)
+  const res = await fetch(`${API_BASE}/api/steps/goal`, {
+    method: "POST",
+    headers: { "Content-Type":"application/json", ...(token ? { Authorization:`Bearer ${token}` } : {}) },
+    body: JSON.stringify({ user_id: id, goal_steps: 0, set_date: todayISO() })
+  })
+  if (!res.ok) throw new Error("RESET_GOAL_FAILED")
+  return res.json().catch(() => ({}))
 }

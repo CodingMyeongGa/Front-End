@@ -100,13 +100,13 @@
   display:grid;
   /* 가로 정렬 핵심: 최소폭 보장 + 남는 공간 분배 */
   grid-template-columns:
-    28px                         /* 요일 */
-    minmax(92px, 0.9fr)          /* 7000 보 */
-    minmax(70px, 0.8fr)          /* 70 분 */
-    minmax(120px, 1.2fr)         /* 걸은 루트 */
+    10px                         /* 요일 */
+    minmax(45px, 0.9fr)          /* 7000 보 */
+    minmax(30px, 0.8fr)          /* 70 분 */
+    minmax(30px, 1.2fr)         /* 걸은 루트 */
     auto;                        /* 배지+체크 */
   align-items:center;
-  gap:10px;
+  gap:5px;
   padding:12px;
   border-radius:12px;
   background:#eceff3;

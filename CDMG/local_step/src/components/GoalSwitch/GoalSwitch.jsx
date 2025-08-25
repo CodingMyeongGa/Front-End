@@ -1,10 +1,48 @@
 import { setGoalForToday, clearGoalAndSession } from "../../hooks/useAutoGoalSession";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { resetUserGoal } from "../../services/stepsApi"; // ⬅️ 추가
+
 import { getToken } from "../../utils/auth";
 import "./GoalSwitch.css";
 
 // const LS_GOAL = 'step_goal'
+const API_BASE = "http://43.201.15.212:8080";
+
+async function ensureUserId(token){
+  let uid = sessionStorage.getItem("userId");
+  if (!uid && token){
+    try{
+      const r = await fetch(`${API_BASE}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
+      if (r.ok){
+        const me = await r.json().catch(()=>null);
+        if (me?.id != null){ uid = me.id; sessionStorage.setItem("userId", uid); }
+      }
+    }catch{}
+  }
+  return uid != null ? (Number(uid) || uid) : undefined;
+}
+
+// 여러 스펙 대응(POST /goal, PUT /goal/{id}, POST /goal/{id})
+async function saveGoalOnServer({ token, user_id, goal_steps, set_date }){
+  const headers = { "Content-Type":"application/json", ...(token ? { Authorization:`Bearer ${token}` } : {}) };
+  const tryFetch = async (url, method, body) => {
+    const r = await fetch(url, { method, headers, body: JSON.stringify(body) });
+    if (!r.ok) { const t = await r.text().catch(()=> ""); const err = new Error(t || `${r.status}`); err.status=r.status; throw err; }
+    return r;
+  };
+  try {
+    return await tryFetch(`${API_BASE}/api/steps/goal`, "POST", { user_id, goal_steps, set_date });
+  } catch (e1) {
+    if (![403,404,405].includes(e1.status)) throw e1;
+    try {
+      return await tryFetch(`${API_BASE}/api/steps/goal/${user_id}`, "PUT", { goal_steps, set_date });
+    } catch (e2) {
+      if (![403,404,405].includes(e2.status)) throw e2;
+      return await tryFetch(`${API_BASE}/api/steps/goal/${user_id}`, "POST", { goal_steps, set_date });
+    }
+  }
+}
 
 function GoalSwitch() {
   const navigate = useNavigate();
@@ -36,47 +74,32 @@ function GoalSwitch() {
   //   if (isOn && goal > 0) localStorage.setItem(LS_GOAL, String(goal))
   //   else localStorage.removeItem(LS_GOAL)
   // }, [isOn, goal])
-  const confirmAndSet = async () => {
-    if (!isOn || goal <= 0) { alert('목표 스위치를 켜고 0보다 큰 값으로 설정하세요.'); return }
-    const ok = window.confirm(`목표를 ${goal.toLocaleString()}보로 설정하시겠습니까?
+const confirmAndSet = async () => {
+  if (!isOn || goal <= 0) { alert('목표 스위치를 켜고 0보다 큰 값으로 설정하세요.'); return }
+  const ok = window.confirm(`목표를 ${goal.toLocaleString()}보로 설정하시겠습니까?
 한 번 설정 시 달성 시 혹은 다음 날 전까지는 변경할 수 없습니다.`)
-    if (!ok) return;
+  if (!ok) return;
 
     const payload = { goal_steps: Number(goal), set_date: todayISO() };
     const uid = sessionStorage.getItem('userId');
     if (uid) payload.user_id = Number(uid) || uid;
 
-    const token = getToken();
-    try {
-      const res = await fetch("http://43.201.15.212:8080/api/steps/goal", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("save_failed");
-      // const saved = await res.json();
-      setGoalForToday(goal);
-      navigate("/");
-    } catch {
-      setGoalForToday(goal); // 로컬은 유지
-      alert("서버 저장에 실패했습니다(CORS/네트워크). 로컬에만 저장되었습니다.");
-      navigate("/");
-    }
-  };
-
-
-
-
-  // 테스트 후 서비스 전 지우기
-  /* ⬇️ 추가: 목표 초기화 버튼 핸들러 */
-  const clearAll = () => {
-    const ok = window.confirm('오늘 설정된 목표와 진행 중인 세션을 초기화할까요?')
-    if (ok){ clearGoalAndSession(); navigate('/') }
+  const token = getToken();
+  try {
+    const res = await fetch("http://43.201.15.212:8080/api/steps/goal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("save_failed");
+    setGoalForToday(goal, uid); // ⬅️ 사용자별 저장
+    navigate("/route-recommend-page"); // ⬅️ 변경
+  } catch {
+    setGoalForToday(goal, uid);
+    alert("서버 저장에 실패했습니다(CORS/네트워크). 로컬에만 저장되었습니다.");
+    navigate("/route-recommend-page");
   }
-
+};
 
 
 
@@ -110,8 +133,7 @@ function GoalSwitch() {
       {/* 목표 설정 버튼 */}
       <button className="round" onClick={confirmAndSet}>목표 설정</button>
 
-      {/* 테스트 후 서비스 전 지우기 */}
-      <button className="round" onClick={clearAll}>목표 초기화</button>
+
 
     </div>
   );

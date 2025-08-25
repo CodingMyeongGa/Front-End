@@ -9,13 +9,13 @@ export default function Footer() {
   const navigate = useNavigate()
   const active =
     pathname === '/' ? 'home' :
-     (pathname === '/set-route' || pathname === '/edit') ? 'setRoute' :
+     (pathname === '/set-route' || pathname === '/edit' || pathname === '/route-recommend-page') ? 'setRoute' :
     pathname === '/mypage' ? 'mypage' : ''
 
   const goSet = () => {
     const g = readGoal()
-    if (g > 0) navigate('/set-route')
-    else navigate('/edit') // 목표 없으면 설정 페이지로 직행
+    if (g > 0) navigate('/route-recommend-page')
+    else navigate('/edit')
   }
 
   return (
