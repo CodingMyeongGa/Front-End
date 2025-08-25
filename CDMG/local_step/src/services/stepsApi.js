@@ -48,10 +48,11 @@ async function fetchWeeklyStepsReal(from, to) {
   if (!res.ok) throw new Error("GET_HISTORY_FAILED");
   const data = await res.json().catch(() => ({}));
   const items = Array.isArray(data?.items) ? data.items : [];
-  return items.map(({ date, current_steps }) => ({
+  return items.map(({ date, current_steps, goal_steps }) => ({
     id: Number(String(date).replaceAll("-", "")) || Date.now(),
     date,
     steps: Number(current_steps) || 0,
+    goal_steps: Number(goal_steps) || 0,
   }));
 }
 
@@ -108,6 +109,20 @@ export async function fetchUserGoal(userId) {
   return res.json();
 }
 
+export async function fetchUserPointsBalance(userId){
+  const token = getToken();
+  const id = userId ?? (Number(sessionStorage.getItem("userId")) || sessionStorage.getItem("userId"));
+  if (id == null) throw new Error("NO_USER_ID");
+  const res = await fetch(`${API_BASE}/api/users/${id}/points/balance`, {
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  });
+  if (!res.ok){
+    if (res.status === 401 || res.status === 404) return { user_id: id, total_points: 0 };
+    throw new Error("GET_POINTS_FAILED");
+  }
+  return res.json();
+}
+
 
 export async function fetchWeekTotalExclToday() {
   const ymd = (d) => {
@@ -135,6 +150,24 @@ export async function fetchWeekTotalExclToday() {
 
   const rows = await fetchWeeklySteps(ymd(start), ymd(end));
   return (rows || []).reduce((sum, r) => sum + (Number(r.steps) || 0), 0);
+}
+
+export async function fetchPointsHistory(userId, startDate, endDate){
+  const token = getToken();
+  const id = userId ?? (Number(sessionStorage.getItem("userId")) || sessionStorage.getItem("userId"));
+  if (id == null) throw new Error("NO_USER_ID");
+  const url = new URL(`${API_BASE}/api/users/${id}/points/history`);
+  if (startDate) url.searchParams.set("start_date", startDate);
+  if (endDate)   url.searchParams.set("end_date", endDate);
+  const res = await fetch(url.toString(), {
+    headers: { "Content-Type":"application/json", ...(token ? { Authorization:`Bearer ${token}` } : {}) }
+  });
+  if (!res.ok){
+    if ([400,401,404].includes(res.status)) return [];
+    throw new Error("GET_POINTS_HISTORY_FAILED");
+  }
+  const data = await res.json().catch(()=>[]);
+  return Array.isArray(data) ? data : [data];
 }
 
 export async function resetUserGoal(userId){

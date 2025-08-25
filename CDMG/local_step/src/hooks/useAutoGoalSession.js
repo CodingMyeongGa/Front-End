@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import usePedometer from './usePedometer'
 
 // per-user keys
@@ -14,6 +14,14 @@ const getUID = () => {
 }
 const goalKey = (uid=getUID()) => `step_goal:${uid}`
 const sessionKey = (uid=getUID()) => `step_session:${uid}`
+
+
+function broadcastAll(uid = getUID()) {
+  window.dispatchEvent(new Event('local-step:goal-change'))
+  window.dispatchEvent(new Event('local-step:refresh'))
+  try { window.dispatchEvent(new StorageEvent('storage', { key: `step_goal:${uid}` })) } catch {}
+  try { window.dispatchEvent(new StorageEvent('storage', { key: `step_session:${uid}` })) } catch {}
+}
 
 export function readGoal(uid=getUID()){
   try{
@@ -37,18 +45,18 @@ export function setGoalForToday(value, uid=getUID()){
   }else{
     localStorage.removeItem(goalKey(uid))
   }
-  window.dispatchEvent(new Event('local-step:goal-change'))
-  window.dispatchEvent(new StorageEvent('storage', { key: goalKey(uid) }))
+  broadcastAll(uid)
 }
+
 
 export function clearGoalAndSession(uid=getUID()){
   localStorage.removeItem(goalKey(uid))
   localStorage.removeItem(sessionKey(uid))
-  window.dispatchEvent(new Event('local-step:goal-change'))
-  window.dispatchEvent(new Event('local-step:refresh'))
-  window.dispatchEvent(new StorageEvent('storage', { key: goalKey(uid) }))
-  window.dispatchEvent(new StorageEvent('storage', { key: sessionKey(uid) }))
+  broadcastAll(uid)                  // ⬅️ 동일
 }
+
+const PERSIST_MS = 800 // 라이브 저장 간격(필요시 500~1500ms로 조절)
+
 
 export default function useAutoGoalSession(){
   const uid = getUID()
@@ -59,7 +67,35 @@ export default function useAutoGoalSession(){
   })
   const baseSet = useRef(false)
 
-  useEffect(() => {
+  // ⬇️ 저장 쓰로틀러
+  const pendingRef = useRef(null)
+  const timerRef = useRef(null)
+  const flushPersist = useCallback(() => {
+    const toSave = pendingRef.current
+    pendingRef.current = null
+    timerRef.current = null
+    if (!toSave) return
+    try { localStorage.setItem(sessionKey(uid), JSON.stringify(toSave)) } catch {}
+  }, [uid])
+  const schedulePersist = useCallback((s) => {
+    pendingRef.current = s
+    if (timerRef.current != null) return
+    // 가능한 경우 idle에 저장, 아니면 타이머
+    if (typeof window.requestIdleCallback === 'function') {
+      timerRef.current = requestIdleCallback(flushPersist, { timeout: PERSIST_MS })
+    } else {
+      timerRef.current = setTimeout(flushPersist, PERSIST_MS)
+    }
+  }, [flushPersist])
+  useEffect(() => () => {
+    // 언마운트 시 남은 것 플러시
+    if (timerRef.current) {
+      if (typeof cancelIdleCallback === 'function') cancelIdleCallback(timerRef.current)
+      else clearTimeout(timerRef.current)
+      flushPersist()
+    }
+  }, [flushPersist])
+    useEffect(() => {
     const onStorage = (e) => {
       if (!e || e.key === goalKey(uid)) setGoal(readGoal(uid))
       if (!e || e.key === sessionKey(uid)){
@@ -70,7 +106,13 @@ export default function useAutoGoalSession(){
       }
     }
     const onGoalChange = () => setGoal(readGoal(uid))
-    const onRefresh = () => { setGoal(readGoal(uid)); setSession(null); baseSet.current = false }
+    const onRefresh = () => { 
+      setGoal(readGoal(uid))
+      try{
+        const s = JSON.parse(localStorage.getItem(sessionKey(uid))||'null')
+        setSession(s || null); baseSet.current = !!(s && s.base)
+      }catch{ setSession(null); baseSet.current = false }
+    }
     window.addEventListener('storage', onStorage)
     window.addEventListener('local-step:goal-change', onGoalChange)
     window.addEventListener('local-step:refresh', onRefresh)
@@ -80,7 +122,7 @@ export default function useAutoGoalSession(){
       window.removeEventListener('local-step:refresh', onRefresh)
     }
   }, [uid])
-
+  
   useEffect(() => {
     const id = setInterval(() => {
       const today = todayKey()
@@ -117,13 +159,13 @@ export default function useAutoGoalSession(){
     const s = { date:key, startedAt: Date.now(), base: steps, total: 0, running:true, done:false }
     baseSet.current = true
     setSession(s); localStorage.setItem(sessionKey(uid), JSON.stringify(s))
-    window.dispatchEvent(new StorageEvent('storage', { key: sessionKey(uid) }))
+    broadcastAll(uid)               // ⬅️ 시작 시에도 확실히 알림
   }
   const stop = () => {
     if (!session) return
     const s = { ...session, running:false }
     setSession(s); localStorage.setItem(sessionKey(uid), JSON.stringify(s))
-    window.dispatchEvent(new StorageEvent('storage', { key: sessionKey(uid) }))
+    broadcastAll(uid)               // ⬅️ 중단 시에도 확실히 알림
   }
 
   return { goal, session, total: session?.total || 0, running: !!session?.running, done: !!session?.done, start, stop }
