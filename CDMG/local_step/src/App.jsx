@@ -16,6 +16,7 @@ import StepsWeekly from './pages/StepsWeekly.jsx';
 import LoginMain from './pages/LoginMain.jsx';
 import Signup from './pages/Signup.jsx';
 import AuthGate from "./routes/AuthGate.jsx";
+import RouteRecommendPage from './pages/RouteRecommendPage.jsx';
 
 
 
@@ -52,6 +53,7 @@ function App() {
           <Route path="stepsweekly" element={<StepsWeekly/>} />
           <Route path="signup" element={<Signup/>} />
           <Route path="login-main" element={<LoginMain/>} />
+          <Route path="route-recommend-page" element={<RouteRecommendPage/>} />
         </Route>
     </Routes>
   );

@@ -1,0 +1,109 @@
+:root{
+  --green:#8DBE74;
+  --green-dark:#8DBE74;
+  --navy:#0e1440;
+  --bg:#f6f7f9;
+  --card:#ffffff;
+  --muted:#74809b;
+}
+
+*{box-sizing:border-box}
+
+.route-page{
+  min-height:100dvh;
+  background: #ffffff;
+  display:flex; flex-direction:column;
+}
+
+/* 헤더 */
+.route-header{
+  height:64px; display:flex; align-items:center; justify-content:center;
+  background:var(--green);
+  color:#0b1d07; font-weight:900; letter-spacing:.02em;
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.route-header h1{ font-size:20px; }
+
+/* 지도 */
+.map-wrap{
+  padding:14px 16px 8px;
+}
+.naver-map{
+  height:260px; border-radius:14px;
+  border:3px solid var(--green);
+  overflow:hidden; background:#dfe6e9;
+  box-shadow:0 2px 10px rgba(0,0,0,.06) inset;
+}
+
+/* 게이지 영역 */
+.gauge-wrap{
+  position:relative;
+  margin:6px 16px 0;
+  background:var(--card);
+  border-radius:16px;
+  padding:18px 12px 8px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+/* 좌우 칩 버튼 */
+.chip{
+  position:absolute; top:6px;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 14px;
+  background:#eef2ea;
+  color:#1e2b18; font-weight:700;
+  border:2px solid var(--green); border-radius:10px;
+  box-shadow:0 2px 0 0 var(--green);
+}
+.chip-ico{ font-size:18px; }
+.chip-left{ left:10px; border-top-left-radius:4px 18px; }
+.chip-right{ right:10px; border-top-right-radius:4px 18px; }
+
+/* 게이지(SVG) */
+.gauge{
+  width:100%; height:auto; display:block; margin-top:32px;
+}
+.gauge-bg{
+  fill:none; stroke:#b9d1a8; stroke-width:18; stroke-linecap:round;
+}
+.gauge-fg{
+  fill:none; stroke:var(--navy); stroke-width:18; stroke-linecap:round;
+  stroke-dasharray:0; stroke-dashoffset:0; /* JS에서 세팅 */
+  transition:stroke-dashoffset .4s ease;
+}
+
+/* 중앙 텍스트 */
+.gauge-center{
+  position:absolute; inset:auto 0 18px 0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  pointer-events:none;
+}
+.gauge-center .steps strong{
+  font-size:28px; color:var(--navy); font-weight:900;
+}
+.gauge-center .steps .target{
+  text-align:center; color:#29325e; font-size:12px; opacity:.9; margin-top:2px;
+}
+.mini-stats{
+  margin-top:10px; color:var(--muted); font-size:13px;
+}
+
+/* 중단 버튼 */
+.stop-wrap{ display:flex; justify-content:center; padding:10px 16px 12px; }
+.btn-stop{
+  padding:12px 26px; font-weight:800; font-size:16px;
+  background:#c96f68; color:#fff; border:none; border-radius:10px;
+  box-shadow:0 2px 0 0 #aa5b55; cursor:pointer;
+}
+.btn-stop:active{ transform:translateY(1px); box-shadow:0 1px 0 0 #aa5b55; }
+
+/* 하단 내비 */
+.bottom-nav{
+  margin-top:auto;
+  height:64px; background:#e9ebef;
+  border-top:1px solid #d7dce3;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  place-items:center;
+}
+.nav-btn{ font-size:24px; background:none; border:none; }
+.nav-btn.active{ filter:grayscale(0%); }

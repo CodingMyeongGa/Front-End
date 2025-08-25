@@ -40,11 +40,7 @@
   justify-content:space-between;
   margin-bottom:10px;
 }
-.card-head__left{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
+.card-head__left{ display:flex; align-items:center; gap:8px; }
 .card-head__icon{ font-size:18px; }
 .card-head__title{ font-weight:700; }
 
@@ -68,23 +64,10 @@
   justify-items:center;
 }
 
-/* 상태 동그라미 */
-.status-dot{
-  display:inline-grid;
-  place-items:center;
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  font-size:14px;
-  line-height:1;
-  border:2px solid var(--navy);
-  color:var(--navy);
-  background:#fff0;              /* 투명 */
-}
-.status-dot.ok{ background:#f5f7fa; }
-.status-dot.fail{ background:#f5f7fa; opacity:.7; }
-.status-dot.sm{ width:20px; height:20px; font-size:12px; border-width:1.5px; }
+/* 주간 상태 아이콘 */
+.status-img{ width:20px; height:20px; display:block; }
 
+/* 요일 라벨 */
 .day-label{
   font-size:12px;
   color:var(--muted);
@@ -96,39 +79,88 @@
   background:var(--line);
   margin:12px 0;
 }
-.legend{
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-  font-size:12px;
-  color:var(--muted);
-}
+.legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted); }
 .legend-item{ display:inline-flex; align-items:center; gap:6px; }
+.legend-item + .legend-item { margin-left:10px; }
+
+/* 아이콘 공통(범례 등) */
+.legend-icon{ width:16px; height:16px; display:block; }
 
 /* --- 목표 기록 리스트 --- */
 .goal-items{
+  list-style:none;
+  padding:0;
+  margin:0;
   display:flex;
   flex-direction:column;
   gap:10px;
 }
+
 .goal-item{
   display:grid;
-  grid-template-columns: 24px 1fr 1fr 1.2fr auto;
+  /* 가로 정렬 핵심: 최소폭 보장 + 남는 공간 분배 */
+  grid-template-columns:
+    28px                         /* 요일 */
+    minmax(92px, 0.9fr)          /* 7000 보 */
+    minmax(70px, 0.8fr)          /* 70 분 */
+    minmax(120px, 1.2fr)         /* 걸은 루트 */
+    auto;                        /* 배지+체크 */
   align-items:center;
   gap:10px;
   padding:12px;
   border-radius:12px;
   background:#eceff3;
 }
-.goal-item .col{ font-size:14px; color:var(--navy); }
-.goal-item .col.day{ font-weight:700; }
-.goal-item .col.done{ justify-self:end; }
 
-/* 반응형 약간 축소 */
+.goal-item .col{
+  font-size:13px;
+  color:var(--navy);
+  white-space:nowrap;            /* 한 줄 유지 */
+  overflow:hidden;
+  text-overflow:ellipsis;        /* 넘치면 … */
+}
+.goal-item .col.day{ font-weight:700; }
+
+/* 체크 옆 증감 배지 묶음 */
+.goal-item .col.done{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;          /* 배지 ↔ 체크 간격 */
+  justify-self:end;
+}
+/* 체크 아이콘(이 컴포넌트 내부에서는 조금 크게) */
+.goal-item .col.done .legend-icon{ width:22px; height:22px; }
+
+/* 증감 배지 */
+.point-delta{
+  display:inline-block;
+  min-width:52px;    /* 숫자 폭 흔들림 방지 */
+  padding:6px 10px;
+  border-radius:9999px;
+  font-size:13px;
+  font-weight:700;
+  line-height:1;
+  text-align:center;
+  border:2px solid;
+  box-sizing:border-box;
+}
+.point-delta.up{
+  color:#1f5f3d; background:#e7f6ee; border-color:#1f5f3d;
+}
+.point-delta.down{
+  color:#7a1e22; background:#fdecec; border-color:#7a1e22;
+}
+.point-delta.zero{
+  color:var(--navy); background:#eef1f6; border-color:var(--navy);
+}
+
+/* 아주 작은 화면에서 더 압축 */
 @media (max-width:360px){
   .goal-item{
-    grid-template-columns: 20px 1fr 1fr 1fr auto;
+    grid-template-columns:
+      24px minmax(82px,0.9fr) minmax(60px,0.8fr) minmax(100px,1fr) auto;
     padding:10px;
   }
-  .status-dot{ width:24px; height:24px; font-size:13px; }
+
+  
 }

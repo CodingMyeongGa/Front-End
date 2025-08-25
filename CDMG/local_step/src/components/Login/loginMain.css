@@ -39,13 +39,13 @@
 }
 
 .login-box input:focus {
-  border-color: #2563eb;
+  border-color: #8DBE74;
 }
 
 /* 버튼 */
 .login-box button {
   padding: 12px;
-  background: #2563eb;
+  background: #8DBE74;
   color: white;
   border: none;
   border-radius: 8px;
@@ -55,7 +55,7 @@
 }
 
 .login-box button:hover {
-  background: #1d4ed8;
+  background: #E75D2F;
 }
 
 /* 에러 메시지 */
@@ -75,7 +75,7 @@
 }
 
 .signup-text a {
-  color: #2563eb;
+  color: #E75D2F;
   text-decoration: none;
   font-weight: 600;
 }

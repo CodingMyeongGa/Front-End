@@ -3,14 +3,14 @@
 .signup-box{width:350px;background:#fff;padding:32px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:12px}
 .signup-title{font-size:24px;font-weight:700;margin-bottom:16px;text-align:center}
 .signup-box input{padding:12px;border:1px solid #d1d5db;border-radius:8px;outline:none;transition:border .2s}
-.signup-box input:focus{border-color:#2563eb}
+.signup-box input:focus{border-color:#8DBE74}
 .error{color:#dc2626;background:#fee2e2;padding:8px;border-radius:6px;font-size:14px}
 .row-email{display:flex;gap:8px;align-items:center}
 .row-email input{flex:1;min-width:0} /* 버튼 앞까지만 확장 */
 .dup-btn{white-space:nowrap;padding:12px 10px;border:none;border-radius:8px;background:#e5e7eb;cursor:pointer;font-weight:600}
 .dup-btn:disabled{opacity:.6;cursor:not-allowed}
-.email-msg{font-size:12px;margin-top:-6px;color:#2563eb}
+.email-msg{font-size:12px;margin-top:-6px;color:#8DBE74}
 .signup-actions{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
 .back-btn{padding:12px 14px;border:none;border-radius:8px;background:#e5e7eb;cursor:pointer;font-weight:600}
-.submit-btn{padding:12px 14px;border:none;border-radius:8px;background:#2563eb;color:#fff;cursor:pointer;font-weight:700}
-.submit-btn:hover{background:#1d4ed8}
+.submit-btn{padding:12px 14px;border:none;border-radius:8px;background:#8DBE74;color:#fff;cursor:pointer;font-weight:700}
+.submit-btn:hover{background:#E75D2F}

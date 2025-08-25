@@ -1,30 +1,3 @@
-// import "./Profile.css";
-// import settingsIcon from "/assets/settingsIcon.png";
-// import { useNavigate } from "react-router-dom";
-
-// const Profile = () => {
-    
-//     const navigate = useNavigate();
-    
-//     const loginButton = () => {
-//         navigate("./login");
-//     }
-    
-//     const openSettings = () => {
-//         console.log("설정 열기");
-//     }
-
-//     return(
-//         <div>
-
-//             <button onClick={loginButton}>로그인</button>
-//             <p>포인트</p>
-//         </div>
-//     );
-// }
-
-// export default Profile;
-
 import settingsIcon from "../../assets/Mypage_Icon/settingsIcon.png";
 import "./Profile.css";
 import { useNavigate } from "react-router-dom";
@@ -58,7 +31,7 @@ function Profile() {
       <div className="points">
         <div className="points-left">
           {/* 이미지 변경 필요*/}
-          <span className="money-icon" aria-hidden="true">💰</span>
+          <span className="money-icon" aria-hidden="true">🪙</span>
           <span className="points-label">포인트</span>
         </div>
         <div className="points-value">5000p</div>
