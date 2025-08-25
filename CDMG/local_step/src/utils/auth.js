@@ -1,16 +1,24 @@
-export const AUTH_KEY = 'auth_token'
+export const AUTH_KEY = "authToken"; // 세션스토리지 키 이름 통일
 
-// ⬇️ dev 용: 세션 단위 로그인(새 탭/서버 재기동 시 초기화 용이)
-const S = sessionStorage
+// dev 용: 세션 단위 로그인 (탭별 관리에 용이)
+const S = sessionStorage;
 
-export const isAuthed = () => !!S.getItem(AUTH_KEY)
-export const getToken = () => S.getItem(AUTH_KEY) || null
+// 로그인 여부 체크
+export const isAuthed = () => !!S.getItem(AUTH_KEY);
 
-export const login = (token = 'localdev') => {
-  S.setItem(AUTH_KEY, token)
-  window.dispatchEvent(new Event('auth:change')) // 동일 탭 즉시 반영
-}
+// 로그인 시 토큰 저장
+export const login = (token) => {
+  S.setItem(AUTH_KEY, token);
+  S.setItem("isLoggedIn", "true");
+  window.dispatchEvent(new Event("auth:change")); // 로그인 상태 반영
+};
+
+// 토큰 가져오기
+export const getToken = () => S.getItem(AUTH_KEY) || null;
+
+// 로그아웃 처리
 export const logout = () => {
-  S.removeItem(AUTH_KEY)
-  window.dispatchEvent(new Event('auth:change'))
-}
+  S.removeItem(AUTH_KEY);
+  S.removeItem("isLoggedIn");
+  window.dispatchEvent(new Event("auth:change"));
+};
