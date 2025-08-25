@@ -10,7 +10,7 @@ import RootLayout from "./layouts/RootLayout.jsx";
 import Home from "./pages/Home.jsx";
 import Mypage from "./pages/Mypage.jsx";
 import Edit from "./pages/Edit.jsx";
-import SetRoute from "./pages/SetRoute.jsx";
+// import SetRoute from "./pages/SetRoute.jsx";
 import Setting from "./pages/Setting.jsx";
 import StepsWeekly from './pages/StepsWeekly.jsx';
 import LoginMain from './pages/LoginMain.jsx';
@@ -39,25 +39,25 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route element={<RootLayout />}>
-        {/* 공개 라우트 */}
-        <Route path="login-main" element={<LoginMain/>} />
-        <Route path="signup" element={<Signup/>} />
+<Routes>
+  <Route element={<RootLayout />}>
+    {/* 공개 라우트 */}
+    <Route path="login-main" element={<LoginMain/>} />
+    <Route path="signup" element={<Signup/>} />
 
-        {/* 보호 라우트 */}
-        <Route element={<AuthGate />}>
-          <Route index element={<Home/>} />
-          <Route path="mypage" element={<Mypage />} />
-          <Route path="edit" element={<Edit />} />
-          <Route path="set-route" element={<SetRoute />} />
-          <Route path="setting" element={<Setting/>} />
-          <Route path="stepsweekly" element={<StepsWeekly/>} />
-          <Route path="route-recommend-page" element={<RouteRecommendPage/>} />
-        </Route>
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    {/* 보호 라우트 */}
+    <Route element={<AuthGate />}>
+      <Route index element={<Home/>} />
+      <Route path="mypage" element={<Mypage />} />
+      <Route path="edit" element={<Edit />} />
+      <Route path="set-route" element={<Navigate to="/route-recommend-page" replace />} /> {/* ⬅️ 리다이렉트 */}
+      <Route path="setting" element={<Setting/>} />
+      <Route path="stepsweekly" element={<StepsWeekly/>} />
+      <Route path="route-recommend-page" element={<RouteRecommendPage/>} />
+    </Route>
+  </Route>
+  <Route path="*" element={<Navigate to="/" replace />} />
+</Routes>
   );
 }
 

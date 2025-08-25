@@ -5,16 +5,16 @@ import { readGoal } from '../../hooks/useAutoGoalSession'
 
 export default function Footer() {
   const { pathname } = useLocation()
-
   const navigate = useNavigate()
   const active =
     pathname === '/' ? 'home' :
-     (pathname === '/set-route' || pathname === '/edit' || pathname === '/route-recommend-page') ? 'setRoute' :
+     (pathname === '/set-route' || pathname === '/edit') ? 'setRoute' :
     pathname === '/mypage' ? 'mypage' : ''
+
 
   const goSet = () => {
     const g = readGoal()
-    if (g > 0) navigate('/route-recommend-page')
+    if (g > 0) navigate('/route-recommend-page')   // ⬅️ 변경
     else navigate('/edit')
   }
 
