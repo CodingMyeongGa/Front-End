@@ -1,15 +1,16 @@
-// src/routes/AuthGate.jsx  ← 새 파일
-import { useEffect, useState } from "react"
-import { Navigate, Outlet } from "react-router-dom"
-
-const KEY = "auth_session"
-
-export function setSessionLoggedIn(v=true){ v ? sessionStorage.setItem(KEY,"1") : sessionStorage.removeItem(KEY) }
-export function isSessionLoggedIn(){ return sessionStorage.getItem(KEY) === "1" }
+import { useEffect, useState } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { isAuthed } from "../utils/auth";
 
 export default function AuthGate(){
-  const [ok, setOk] = useState(null)
-  useEffect(() => { setOk(isSessionLoggedIn()) }, [])
-  if (ok == null) return null
-  return ok ? <Outlet/> : <Navigate to="/login-main" replace />
+  const { pathname } = useLocation();
+  const [ok, setOk] = useState(null);
+  useEffect(() => {
+    const check = () => setOk(isAuthed());
+    check();
+    window.addEventListener("auth:change", check);
+    return () => window.removeEventListener("auth:change", check);
+  }, []);
+  if (ok == null) return null;
+  return ok ? <Outlet/> : <Navigate to="/login-main" replace state={{ from: pathname }} />;
 }

@@ -2,7 +2,6 @@ import { useState } from "react";
 import "../components/Login/LoginMain.css";
 import { useNavigate } from "react-router-dom";
 import "../components/Login/Signup.css";
-import { login } from "../utils/auth";
 
 export default function Signup() {
   const nav = useNavigate();
@@ -53,7 +52,8 @@ export default function Signup() {
     }
   };
 
-  const onSubmit = async (e) => {
+
+ const onSubmit = async (e) => {
     e.preventDefault();
     setErr("");
 
@@ -61,17 +61,14 @@ export default function Signup() {
       setErr("모든 항목을 입력해 주세요.");
       return;
     }
-
     if (!emailValid || !emailConfirmed) {
       setErr("이메일 형식 확인 및 중복 확인을 완료해주세요.");
       return;
     }
-
     if (pw.length < 6) {
       setErr("비밀번호는 6자 이상 입력해 주세요.");
       return;
     }
-
     if (pw !== pw2) {
       setErr("비밀번호가 일치하지 않습니다.");
       return;
@@ -86,12 +83,16 @@ export default function Signup() {
       const data = await res.json();
       if (!res.ok || !data?.success) throw new Error(data.message || "회원가입 실패");
 
-      login("localdev");
-      nav("/", { replace: true });
+      // login("localdev"); // ⬅️ 제거: 자동 로그인 금지
+      sessionStorage.removeItem("authToken"); // ⬅️ 안전 차단
+      sessionStorage.removeItem("isLoggedIn");
+
+      nav("/login-main", { replace: true }); // ⬅️ 회원가입 후 로그인 화면으로 이동
     } catch (err) {
       setErr(err.message || "문제가 발생했습니다.");
     }
   };
+
 
   return (
     <div className="signup-container">

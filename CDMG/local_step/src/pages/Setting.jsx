@@ -1,16 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { logout } from "../utils/auth";
 
 function Settings() {
   const navigate = useNavigate();
-
   const handleLogout = () => {
-    // 세션/토큰 삭제 (localStorage나 쿠키 사용 시)
-    localStorage.removeItem("token");
-
-    // signup 페이지로 이동
-    navigate("/login-main");
+    logout();
+    navigate("/login-main", { replace: true });
   };
-
   return (
     <div>
       <h1></h1>
@@ -18,5 +14,4 @@ function Settings() {
     </div>
   );
 }
-
 export default Settings;

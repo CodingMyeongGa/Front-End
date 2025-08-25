@@ -19,7 +19,6 @@ import AuthGate from "./routes/AuthGate.jsx";
 import RouteRecommendPage from './pages/RouteRecommendPage.jsx';
 
 
-
 function App() {
   const [active, setActive] = useState('home');
   const headerTitles = {
@@ -27,8 +26,6 @@ function App() {
     setRoute: '경로 설정',
     mypage: '마이 페이지'
   };
-
-  const totalSteps = 49000;
 
   const [authed, setAuthed] = useState(isAuthed());
   useEffect(() => {
@@ -43,18 +40,23 @@ function App() {
 
   return (
     <Routes>
-        {/* ▼ 로그인 필요 영역 */}
-        <Route element={<RootLayout />}>
-          <Route index element={<Home week_step_total={totalSteps} />} />
+      <Route element={<RootLayout />}>
+        {/* 공개 라우트 */}
+        <Route path="login-main" element={<LoginMain/>} />
+        <Route path="signup" element={<Signup/>} />
+
+        {/* 보호 라우트 */}
+        <Route element={<AuthGate />}>
+          <Route index element={<Home/>} />
           <Route path="mypage" element={<Mypage />} />
           <Route path="edit" element={<Edit />} />
           <Route path="set-route" element={<SetRoute />} />
           <Route path="setting" element={<Setting/>} />
           <Route path="stepsweekly" element={<StepsWeekly/>} />
-          <Route path="signup" element={<Signup/>} />
-          <Route path="login-main" element={<LoginMain/>} />
           <Route path="route-recommend-page" element={<RouteRecommendPage/>} />
         </Route>
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
