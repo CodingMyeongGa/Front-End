@@ -1,9 +1,10 @@
 import { setGoalForToday, clearGoalAndSession } from "../../hooks/useAutoGoalSession";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "../../utils/auth";
 import "./GoalSwitch.css";
 
-const LS_GOAL = 'step_goal'
+// const LS_GOAL = 'step_goal'
 
 function GoalSwitch() {
   const navigate = useNavigate();
@@ -24,19 +25,47 @@ function GoalSwitch() {
   
   useEffect(() => {}, [isOn, goal]);
 
+  const todayISO = () => {
+    const d = new Date();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${d.getFullYear()}-${mm}-${dd}`;
+  };
+
   // useEffect(() => {
   //   if (isOn && goal > 0) localStorage.setItem(LS_GOAL, String(goal))
   //   else localStorage.removeItem(LS_GOAL)
   // }, [isOn, goal])
-  const confirmAndSet = () => {
+  const confirmAndSet = async () => {
     if (!isOn || goal <= 0) { alert('목표 스위치를 켜고 0보다 큰 값으로 설정하세요.'); return }
     const ok = window.confirm(`목표를 ${goal.toLocaleString()}보로 설정하시겠습니까?
 한 번 설정 시 달성 시 혹은 다음 날 전까지는 변경할 수 없습니다.`)
-    if (ok){
-      setGoalForToday(goal)       // 오늘 목표 저장(+storage 이벤트 발생)
-      navigate('/')              // 홈으로 이동
+    if (!ok) return;
+
+    const payload = { goal_steps: Number(goal), set_date: todayISO() };
+    const uid = sessionStorage.getItem('userId');
+    if (uid) payload.user_id = Number(uid) || uid;
+
+    const token = getToken();
+    try {
+      const res = await fetch("http://43.201.15.212:8080/api/steps/goal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("save_failed");
+      // const saved = await res.json();
+      setGoalForToday(goal);
+      navigate("/");
+    } catch {
+      setGoalForToday(goal); // 로컬은 유지
+      alert("서버 저장에 실패했습니다(CORS/네트워크). 로컬에만 저장되었습니다.");
+      navigate("/");
     }
-  }
+  };
 
 
 
