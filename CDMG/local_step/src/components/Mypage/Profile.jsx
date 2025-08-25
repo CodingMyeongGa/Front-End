@@ -5,15 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { getToken } from "../../utils/auth";
 import { fetchUserPointsBalance } from "../../services/stepsApi";
 
-const API_BASE = "http://43.201.15.212:8080";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function Profile() {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
-    const [points, setPoints] = useState(0); 
+  const [points, setPoints] = useState(0);
 
-  const goLogin = () => navigate("/login"); // (변경 없음)
-  const openSettings = () => navigate("/setting"); // (변경 없음)
+  const openSettings = () => navigate("/setting");
 
   useEffect(() => {
     const token = getToken();
@@ -37,8 +36,6 @@ function Profile() {
     })();
   }, []);
 
-
-
   return (
     <section className="profile-card" role="region" aria-label="프로필 카드">
       <button className="settings-btn" onClick={openSettings} aria-label="설정 열기">
@@ -47,14 +44,13 @@ function Profile() {
       <div className="avatar" aria-hidden="true" />
       <div className="info">
         <h2 className="name">{nickname || "..."}</h2>
-        {/* <button className="verify-btn" onClick={goLogin}>카카오로 로그인</button> */}
       </div>
       <div className="points">
         <div className="points-left">
           <span className="money-icon" aria-hidden="true">🪙</span>
           <span className="points-label">포인트</span>
         </div>
-        <div className="points-value">{points.toLocaleString()}p</div> {/* ⬅️ 수정 */}
+        <div className="points-value">{points.toLocaleString()}p</div>
       </div>
     </section>
   );
